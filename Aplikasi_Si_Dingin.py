@@ -662,4 +662,4 @@ else:
     elif st.session_state.user_role == "owner":
         tampilan_owner()
     elif st.session_state.user_role == "teknisi":
-        tampilan_teknisi()        tampilan_teknisi()
+        tampilan_teknisi()
