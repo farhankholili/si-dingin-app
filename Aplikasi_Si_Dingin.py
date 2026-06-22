@@ -12,7 +12,43 @@ from openpyxl.drawing.image import Image as ExcelImage
 
 # Ambil model database baru yang sudah Multi-Tenant
 from database import db, Order, DetailOrder, User, Layanan, Bengkel
-from test_input import buat_order_baru
+import os
+
+# 1. Pastikan database dan tabel sudah terbuat sempurna
+db.connect(reuse_if_open=True)
+db.create_tables([Bengkel, User, Layanan, Order, DetailOrder])
+
+# 2. SUNTIK DATA AWAL (BIAR GAK GAGAL BUAT AKUN)
+def suntik_data_awal():
+    # Buat Bengkel Pertama (jika belum ada)
+    bengkel_utama, created = Bengkel.get_or_create(
+        nama_bengkel="Mutiara AC Center",
+        defaults={
+            "alamat": "Situbondo",
+            "no_telp": "08123456789",
+            "owner_name": "Farhan Kholili"
+        }
+    )
+    
+    # Buat Akun Super Admin bawaan untuk login pertama (jika belum ada)
+    # Catatan: Di kodingan asli Bos, pastikan password-nya di-hash kalau pakai sistem keamanan hash!
+    User.get_or_create(
+        username="admin",
+        defaults={
+            "bengkel": bengkel_utama,
+            "password": "admin", # Silakan ganti sesuai kebutuhan Bos
+            "nama_lengkap": "Super Admin Farhan",
+            "role": "super_admin",
+            "is_active": True
+        }
+    )
+
+# Jalankan fungsi suntik data
+suntik_data_awal()
+
+# Buat ulang database baru gres dengan struktur Multi-Tenant yang sempurna
+db.connect(reuse_if_open=True)
+db.create_tables([Bengkel, User, Layanan, Order, DetailOrder])
 
 # Konfigurasi Halaman Utama
 st.set_page_config(page_title="Si Dingin - Sistem Integrasi SaaS", layout="wide")
