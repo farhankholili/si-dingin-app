@@ -19,6 +19,7 @@ st.set_page_config(page_title="Si Dingin - Sistem Integrasi SaaS", layout="wide"
 
 # Hubungkan Database
 db.connect(reuse_if_open=True)
+db.create_tables([Bengkel, User, Layanan, Order, DetailOrder])
 
 # --------------------------------------------------
 # INISIALISASI SESSION STATE (PAPAN SATPAM)
